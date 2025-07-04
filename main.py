@@ -95,7 +95,6 @@ running = True
 
 while running:
     mouse_pos = pygame.mouse.get_pos()
-    # Botón silenciar música
     ancho_boton_musica = int(ANCHO * 0.15)
     alto_boton_musica = int(ALTO * 0.06)
     rec_boton_musica = pygame.Rect(
@@ -270,22 +269,21 @@ while running:
                             (x - buscaminas[0].x) // tamaño_celda)
                         fila = int((y - buscaminas[0].y) // tamaño_celda)
 
-                        # if 0 <= fila < columnas and 0 <= columna < columnas:
-                        if fila >= 0 and fila < columnas and columna >= 0 and columna < columnas:
+                        if 0 <= fila < columnas and 0 <= columna < columnas:
 
                             if evento.button == 1:
                                 if matriz_estado[fila][columna] != BANDERA:
                                     if primera_jugada:
                                         while True:
                                             matriz_juego = generar_matriz(
-                                                columnas, columnas, MINAS, (fila, columna))
+                                                columnas, columnas, MINAS, (fila, columna), MINA)
                                             if matriz_juego[fila][columna] == 0:
                                                 break
                                         primera_jugada = False
                                         BUSCAMINAS_INICIADO = True
 
                                     exploto = descubrir(
-                                        matriz_estado, matriz_juego, fila, columna)
+                                        matriz_estado, matriz_juego, fila, columna, (MINA, DESCUBIERTA, BANDERA))
                                     if exploto:
                                         BUSCAMINAS_INICIADO = False
                                         estado_derrota = True

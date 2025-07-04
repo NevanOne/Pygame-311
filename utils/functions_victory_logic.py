@@ -245,3 +245,4 @@ def mostrar_pantalla_victoria(ventana, puntaje, config):
 
     nombre = ejecutar_cuadro_victoria(ventana, rect_cuadro, puntaje, config)
     return nombre
+

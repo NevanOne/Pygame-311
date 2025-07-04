@@ -26,21 +26,24 @@ def calcular_dimensiones_posicion(pantalla, dim_pos: dict, indice=0) -> tuple:
     return posicion_x_boton, posicion_y_boton, ancho_boton, alto_boton
 
 
-def crear_buscaminas(pantalla, dic_buscaminas: dict, ancho) -> tuple:
+def crear_buscaminas(pantalla, dic_buscaminas: dict, ancho:int) -> tuple:
     '''
     Crea los valores del cuadro del buscaminas\n
     pantalla: Superficie que usa para calcular los elementos\n
     dic_buscaminas(dict): Diccionario con los valores de buscamias\n
+    ancho(int): suma el ancho del elemento mas largo que hay antes del buscaminas
     return(tuple): retorna una tupla con los valores (rectangulo, superficie, lado_sup)
     '''
     lado_sup = int(pantalla.get_height() * dic_buscaminas[0]['dimension'])
+    while lado_sup >= (pantalla.get_width() - ancho):
+        lado_sup -= 10
     superficie = pygame.Surface((lado_sup, lado_sup))
     superficie.fill("black")
 
     posicion_x_buscaminas = int(
         pantalla.get_width() * dic_buscaminas[0]['x'] // 2 + ancho)
     posicion_y_buscaminas = int(
-        pantalla.get_height() * dic_buscaminas[0]['y'] // 2)
+        pantalla.get_height()//2 - lado_sup // 2)
 
     rec_buscaminas = pygame.Rect(
         posicion_x_buscaminas, posicion_y_buscaminas, lado_sup, lado_sup)
@@ -235,22 +238,26 @@ def dibujar_elementos_pantalla(pantalla, elementos: dict, COLOR_RECTANGULOS: tup
     color_rectangulos(tuple): El color de fondo del contador y timer\n
     mause_pos(tuple): posicion actual del mouse
     '''
+    # bucaminas
     pantalla.blit(elementos[0]['buscaminas'][1], elementos[0]['buscaminas'][0])
     pygame.draw.rect(pantalla, COLOR_RECTANGULOS,
                      elementos[0]['buscaminas'][0])
 
+    # timer
     pygame.draw.rect(pantalla, COLOR_RECTANGULOS,
                      elementos[0]['timer'][1], border_radius=15)
     pygame.draw.rect(pantalla, (232, 216, 67),
                      elementos[0]['timer'][1], width=5, border_radius=15)
     pantalla.blit(elementos[0]['timer'][0], elementos[0]['timer'][3])
 
+    # contador
     pygame.draw.rect(pantalla, COLOR_RECTANGULOS,
                      elementos[0]['contador'][0], border_radius=20)
     pygame.draw.rect(pantalla, (230, 16, 73),
                      elementos[0]['contador'][0], width=5, border_radius=20)
     pantalla.blit(elementos[0]['contador'][2], elementos[0]['contador'][1])
 
+    # botones
     dibujar_botones(
         pantalla, elementos[0]['botones'], elementos[0]['hover'], mouse_pos)
 
@@ -284,21 +291,6 @@ def dibujar_pantalla_dif(pantalla, imagenes: dict, fondo: str):
                 imagenes[i]['superficie'].centerx, imagenes[i]['superficie'].centery - (imagenes[i]['superficie'].height/1.3)))
 
         pantalla.blit(imagen_texto_boton, imagen_rect)
-
-
-def extraer_informacion_dif(dificultad: str, diccionario: dict) -> tuple:
-    '''
-    Extrae y retorna la informacion del diccionario de dificultad\n
-    dificultad(str): Clave de dificultad del cual se va a extraer la info\n
-    diccionario(dict): Diccionario que itinera para extraer la info\n
-    return(tuple): Retorna (dificultad, filas_columnas, minas)
-    '''
-    for i in range(len(diccionario)):
-        if diccionario[i]['dificultad'] == dificultad:
-            filas_columnas = diccionario[i]['columnas']
-            minas = diccionario[i]['minas']
-
-    return dificultad, filas_columnas, minas
 
 
 def inicializar_matriz_por_dificultad(dificultad: str, diccionario: dict, ancho_buscaminas: int, CUBIERTA) -> tuple:
